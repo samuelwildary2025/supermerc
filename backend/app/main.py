@@ -1,1 +1,7 @@
-�jh��(�ױ�X�~�&}�-j����+�V���~�&��Z��^�(�����m~�&��Z��^�Ƴ)܊�����̧q'��*'~�&j�r��֭i��z)���Rz�"�r�q�_��������.�+r�jh���
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def root():
+    return {"message": "Backend is running successfully!"}
