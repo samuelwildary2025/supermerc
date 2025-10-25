@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: supermarket_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 85885885
+      POSTGRES_DB: supermercado
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - supermarket-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d supermercado"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: supermarket_backend
+    command: bash -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - supermarket-net
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: supermarket_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - supermarket-net
+
+networks:
+  supermarket-net:
+    driver: bridge
+
+volumes:
+  postgres_data:

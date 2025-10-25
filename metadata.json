@@ -1,0 +1,5 @@
+{
+  "name": "Supermarket SaaS Frontend",
+  "description": "A multi-tenant SaaS platform for supermarkets to manage their orders. This is the React frontend for both the supermarket clients and the SaaS administrator.",
+  "requestFramePermissions": []
+}
