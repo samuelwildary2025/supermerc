@@ -11,4 +11,4 @@ COPY . .
 ENV PYTHONPATH=/app
 
 # Cria as tabelas automaticamente ao subir o container
-CMD ["bash", "-c", "cd alembic && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+CMD ["bash", "-c", "cd backend && alembic -c alembic.ini upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
