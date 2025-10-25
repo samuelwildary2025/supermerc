@@ -8,82 +8,56 @@ This is a multi-tenant SaaS platform for supermarkets, built with FastAPI, React
 
 ---
 
-## One-Click Installation (macOS)
+## Production Deployment
 
-For the easiest setup on a Mac, use the provided installation script.
+This project is ready for production deployment using its Docker setup.
 
-### 1. Make the Script Executable (One-Time Setup)
+### 1. Push to GitHub
+Push your code to a private GitHub repository. Ensure your `.env` file is listed in `.gitignore` and is **not** committed.
 
-Before you can run the script, you need to give it permission to execute. You only need to do this once.
+### 2. Server Setup (Using a Control Panel like EasyPanel)
+1.  **Connect Your Repository**: In your server's control panel, connect it to your GitHub repository.
+2.  **Set Environment Variables**: Do not use a `.env` file in production. Instead, use your panel's interface to set the following environment variables:
+    - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`: Use strong, unique credentials for your production database.
+    - `DATABASE_URL`: `postgresql://<user>:<password>@db:5432/<db_name>` (use the container name `db` as the host).
+    - `SECRET_KEY`: **Generate a new, secure key**. You can use `openssl rand -hex 32` to create one.
+    - `ADMIN_EMAIL`, `ADMIN_PASSWORD`: Set the credentials for the initial global administrator.
+    - `BACKEND_CORS_ORIGINS`: **This is critical for security.** Set it to the domain of your frontend. Example: `["https://www.your-supermarket.com"]`
 
-1.  Open the **Terminal** app.
-2.  Navigate to the project directory.
-3.  Run the following command:
-    ```bash
-    chmod +x install-app.sh
-    ```
-
-### 2. Run the Installer
-
-Simply double-click the `install-app.sh` file in Finder.
-
-The script will automatically:
-- Check if Docker is running.
-- Set up the necessary configuration files.
-- Build and start the database, backend, and frontend services.
-- Show a notification when it's done.
-- Open the application in your web browser.
-
-Once complete, the application will be available at [http://localhost:5173](http://localhost:5173).
-
-### Stopping the Application
-
-To stop the application, you can use the `stop-app.sh` script (you may need to make it executable first with `chmod +x stop-app.sh`).
+3.  **Deploy**: Use your panel's "Deploy" feature. It will read the `docker-compose.yml` file and orchestrate the build and launch of all services.
 
 ---
 
-## Manual Installation Steps
+## Local Development
 
-If you prefer to run the commands manually, follow the steps below.
+### One-Click Installation (macOS)
 
-### 1. Configure Environment Variables
+For the easiest setup on a Mac, use the provided installation script.
 
+#### 1. Make the Script Executable (One-Time Setup)
+```bash
+chmod +x install-app.sh
+```
+
+#### 2. Run the Installer
+Simply double-click the `install-app.sh` file in Finder. The script will set up, build, and launch everything, opening the app in your browser when ready.
+
+---
+
+### Manual Installation Steps
+
+#### 1. Configure Environment
 Create a `.env` file by copying the example:
-
 ```bash
 cp .env.example .env
 ```
-The default values are configured to work with Docker Compose. For production, you should change `POSTGRES_PASSWORD` and generate a new `SECRET_KEY` using:
-```bash
-openssl rand -hex 32
-```
+The defaults are fine for local development.
 
-### 2. Build and Run with Docker Compose
-
-From the root directory, run:
-
+#### 2. Build and Run
 ```bash
 docker-compose up --build -d
 ```
 
-### 3. Accessing the Application
-
-- **Frontend Application**: [http://localhost:5173](http://localhost:5173)
-- **Backend API Docs (Swagger UI)**: [http://localhost:8000/docs](http://localhost:8000/docs)
-
-### Admin & Client Login
-- **Global Admin**: An admin account is created automatically on the first run. The credentials are set in your `.env` file (default: `admin@example.com` / `supersecretpassword`).
-- **Client Signup**: New clients can be created via the API endpoint `POST /api/auth/signup-cliente` in the Swagger UI.
-
-## Managing the Application Manually
-
-- **Stop the application**: `docker-compose down`
-- **View logs**: `docker-compose logs -f <service_name>` (e.g., `backend`, `frontend`)
-
-## Alembic Migrations
-
-To create a new database migration after changing the SQLAlchemy models:
-
-1. Access the running backend container: `docker-compose exec backend bash`
-2. Inside the container, run: `alembic revision --autogenerate -m "Your migration message"`
-3. Restart the services to apply the migration: `docker-compose up -d --build`
+### Accessing the Application
+- **Frontend**: [http://localhost:5173](http://localhost:5173)
+- **Backend API Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
