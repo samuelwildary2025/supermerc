@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
-app = FastAPI(title="Supermerc Backend API")
+app = FastAPI(title="Wild Merc Backend")
 
-# Libera CORS para o frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -13,5 +13,9 @@ app.add_middleware(
 )
 
 @app.get("/")
-def root():
+def read_root():
     return {"message": "Backend is running successfully!"}
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
