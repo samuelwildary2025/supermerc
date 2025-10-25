@@ -23,7 +23,7 @@ services:
   backend:
     build: ./backend
     container_name: supermarket_backend
-    command: bash -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    command: bash -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
     volumes:
       - ./backend:/app
     ports:
@@ -38,8 +38,8 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: frontend/Dockerfile
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: supermarket_frontend
     ports:
       - "5173:80"
